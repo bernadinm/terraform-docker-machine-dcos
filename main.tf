@@ -1,11 +1,13 @@
 resource "dockermachine_virtualbox" "bootstrap" {
     name = "bootstrap"
     virtualbox_cpu_count = 1
-    virtualbox_memory = 2048
+    virtualbox_memory = 3072
     #virtualbox_boot2docker_url = "https://stable.release.core-os.net/amd64-usr/current/coreos_production_iso_image.iso"
     provisioner "remote-exec" {
         inline = [
-            "touch /tmp/this_is_a_test",
+            "tce-load -wic bash.tcz",
+            "tce-load -wic xz.tcz",
+            "tce-load -wic git.tcz"
         ]
         connection {
             type        = "ssh"
