@@ -1,7 +1,7 @@
 resource "dockermachine_virtualbox" "bootstrap" {
     name = "bootstrap"
     virtualbox_cpu_count = 1
-    virtualbox_memory = 3072
+    virtualbox_memory = 4096
     #virtualbox_boot2docker_url = "https://stable.release.core-os.net/amd64-usr/current/coreos_production_iso_image.iso"
     provisioner "remote-exec" {
         inline = [
@@ -71,8 +71,7 @@ resource "dockermachine_virtualbox" "bootstrap" {
     dcos_master_dns_bindall = "${var.dcos_master_dns_bindall}"
     # TODO(bernadinm) Terraform Bug: 9488.  Templates will not accept list, but only strings.
     # Workaround is to flatten the list as a string below. Fix when this is closed.
-    dcos_master_list = "1.2.3.4"
-    # ---- dcos_master_list = "\n - ${join("\n - ", dockermachine_virtualbox.master.*.ssh_hostname)}"
+    dcos_master_list = "\n - ${join("\n - ", dockermachine_virtualbox.master.*.address)}"
     dcos_no_proxy = "${var.dcos_no_proxy}"
     dcos_num_masters = "${var.num_of_masters}"
     dcos_oauth_enabled = "${var.dcos_oauth_enabled}"
@@ -195,6 +194,12 @@ resource "null_resource" "bootstrap" {
     port        = "${dockermachine_virtualbox.bootstrap.ssh_port}"
     user        = "${dockermachine_virtualbox.bootstrap.ssh_username}"
     private_key = "${file("${dockermachine_virtualbox.bootstrap.ssh_keypath}")}"
+   }
+
+  # DCOS ip detect script
+  provisioner "file" {
+   source = "${path.module}/scripts/local/ip-detect"
+   destination = "/tmp/ip-detect"
    }
 
   # Generate and upload bootstrap script to node

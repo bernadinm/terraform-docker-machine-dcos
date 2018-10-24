@@ -10,11 +10,6 @@ variable "ssh_private_key_filename" {
  description = "Path to file containing your ssh private key"
 }
 
-variable "user" {
-  description = "Username of the OS"
-  default = "core"
-}
-
 variable "aws_region" {
   description = "AWS region to launch servers."
   default     = "us-west-2"
@@ -23,6 +18,11 @@ variable "aws_region" {
 variable "aws_profile" {
   description = "AWS profile to use"
   default     = "default"
+}
+
+variable "user" {
+  description = "Username of the OS"
+  default = "core"
 }
 
 variable "admin_cidr" {
@@ -140,7 +140,7 @@ variable "dcos_security" {
 }
 
 variable "dcos_resolvers" {
- default = [ "169.254.169.253" ]
+ default = [ "8.8.8.8" ]
  description = "DNS Resolver for internal name resolution. Points to Amazon DNS server which can resolve external addresses."
 }
 
@@ -155,7 +155,7 @@ variable "dcos_master_external_loadbalancer" {
 }
 
 variable "dcos_master_discovery" {
- default = "master_http_loadbalancer"
+ default = "static"
  description = "Ability to use an ELB or a static list for master descovery"
 }
 
@@ -190,7 +190,7 @@ variable "dcos_aws_template_storage_secret_access_key" {
 }
 
 variable "dcos_exhibitor_storage_backend" {
- default = "aws_s3"
+ default = "static"
  description = "specify an external storage system (static, zookeeper, azure, and aws_s3)"
 }
 
@@ -481,7 +481,7 @@ variable "state" {
 }
 
 variable "dcos_ip_detect_public_contents" {
- default = "\"'#!/bin/sh\\n\\n  set -o nounset -o errexit\\n\\n\\n  curl -fsSL http://169.254.169.254/latest/meta-data/public-ipv4\\n\\n   '\\n\""
+ default = "\"'#!/bin/sh\\n\\n  set -o nounset -o errexit\\n\\n\\n  curl -fsSL http://whatsmyip.akamai.com\\n\\n   '\\n\""
  description = "Used for AWS to determine the public IP. DC/OS bug requires this variable instead of a file see https://jira.mesosphere.com/browse/DCOS_OSS-905 for more information."
 }
 
